@@ -49,10 +49,12 @@
       </select>
     </div>
   </div>
+  <ReloadPrompt />
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch, watchEffect } from "vue"
+import { reactive, watch } from "vue"
+import ReloadPrompt from './components/ReloadPrompt.vue'
 
 interface State {
   [key: string]: number;
