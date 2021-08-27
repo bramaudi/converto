@@ -1,8 +1,8 @@
 const factor = {}
 factor[0] = {
-	b: 1,
-	kb: 0.0009765625,
-	mb: 9.5367431640625e-7
+	'Byte': 1,
+	'Kilobyte': Math.pow(1024, 1),
+	'Megabyte': Math.pow(1024, 2),
 }
 
 const unit = (i) => Object.keys(factor[0])[i]
@@ -11,14 +11,14 @@ const convert = (value, units) => {
 	const [unitA, unitB] = units
 	if (unitA == unitB) return value
 	return (unitA < unitB)
-		? value * factor[0][unit(unitA > 0 ? unitA : unitB)]
-		: value / factor[0][unit(unitB > 0 ? unitB : unitA)]
+		? (value * factor[0][unit(unitA)]) / factor[0][unit(unitB)]
+		: (value / factor[0][unit(unitB)]) * factor[0][unit(unitA)]
 }
 
 test('factor keys should in order', () => {	
-	expect(unit(0)).toBe('b');
-	expect(unit(1)).toBe('kb');
-	expect(unit(2)).toBe('mb');
+	expect(unit(0)).toBe('Byte');
+	expect(unit(1)).toBe('Kilobyte');
+	expect(unit(2)).toBe('Megabyte');
 });
 
 test('1b = b,kb,mb', () => {

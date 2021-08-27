@@ -56,10 +56,13 @@ const handleChange = (e: Event, prop: string) => {
   const {value} = (<HTMLInputElement>e.currentTarget)
   state[prop] = parseInt(value)
 
-  if (prop === 'valueB') {
-    state.valueA = convert(state.valueB, [state.unitB, state.unitA])
-  } else {
+  if (prop === 'valueA' || prop === 'unitB') {
     state.valueB = convert(state.valueA, [state.unitA, state.unitB])
+    return
+  }
+  if (prop === 'valueB' || prop === 'unitA') {
+    state.valueA = convert(state.valueB, [state.unitB, state.unitA])
+    return
   }
 }
 </script>
