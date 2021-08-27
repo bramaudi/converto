@@ -16,6 +16,7 @@
       @change:value="e => handleChange(e, 'valueA')"
       @change:unit="e => handleChange(e, 'unitA')"
       :unit="Object.keys(factor[state.property])"
+      :unit-selected="state.unitA"
       :value="state.valueA"
     />
     <div class="divider">=</div>
@@ -23,6 +24,7 @@
       @change:value="e => handleChange(e, 'valueB')"
       @change:unit="e => handleChange(e, 'unitB')"
       :unit="Object.keys(factor[state.property])"
+      :unit-selected="state.unitB"
       :value="state.valueB"
     />
   </div>
@@ -30,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { reactive, watch } from "vue"
 import { property, factor, convert } from './unit'
 import ReloadPrompt from './components/ReloadPrompt.vue'
 import InputValue from './components/InputValue.vue'
@@ -52,16 +54,23 @@ const state: State = reactive({
   valueB: 0
 })
 
+watch(() => state.property, () => {
+  state.valueA = 0
+  state.valueB = 0
+  state.unitA = 0
+  state.unitB = 0
+})
+
 const handleChange = (e: Event, prop: string) => {
   const {value} = (<HTMLInputElement>e.currentTarget)
   state[prop] = parseInt(value)
 
   if (prop === 'valueA' || prop === 'unitB') {
-    state.valueB = convert(state.valueA, [state.unitA, state.unitB])
+    state.valueB = convert(state.property, state.valueA, [state.unitB, state.unitA])
     return
   }
   if (prop === 'valueB' || prop === 'unitA') {
-    state.valueA = convert(state.valueB, [state.unitB, state.unitA])
+    state.valueA = convert(state.property, state.valueB, [state.unitA, state.unitB])
     return
   }
 }
@@ -84,9 +93,9 @@ body {
   color: #fff;
 }
 .divider {
-  font-size: medium;
-  margin: 0 .2em;
-	padding: .7em;
+  font-size: xx-large;
+  margin: 0 .3em;
+  padding: .1em;
 }
 .input {
 	background-color: #3b556f;

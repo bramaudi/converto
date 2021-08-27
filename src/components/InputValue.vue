@@ -7,11 +7,12 @@
 			:value="value"
 		/>
 		
-		<select class="input" style="width: 100%;" @click="e => $emit('change:unit', e)">
+		<select class="input" style="width: 100%;" @change="e => $emit('change:unit', e)">
 			<option
 				v-for="(unitName, index) in unit"
 				:key="index"
 				:value="index"
+				:selected="index == selectedUnit"
 			>
 				{{unitName}}
 			</option>
@@ -20,13 +21,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
 interface Props {
   unit: string[]
+	unitSelected: number
 	value: number
 }
-defineProps<Props>()
+const props = defineProps<Props>()
 defineEmits(['change:value', 'change:unit'])
-const rand = Math.floor(Math.random() * 9999).toString();
+
+const selectedUnit = computed(() => props.unitSelected)
 </script>
 
 <style>
