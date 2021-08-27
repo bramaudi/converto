@@ -1,60 +1,39 @@
 <template>
-  <select @change="e => handleChange(e, 'property')">
-    <option
-      v-for="key in Object.keys(property)"
-      :key="key"
-      :value="key"
-    >
-      {{property[~~(key)]}}
-    </option>
-  </select>
-
-  <h1>Convert</h1>
   <div style="display: flex; justify-content: center;">
-    <div>
-      <div>
-        <input
-          type="number"
-          @input="e => handleChange(e, 'valueA')"
-          :value="state.valueA"
-        />
-      </div>
-      <select @change="e => handleChange(e, 'unitA')">
-        <option
-          v-for="(unitName, index) in unit[state.property]"
-          :key="index"
-          :value="index"
-        >
-          {{unitName}}
-        </option>
-      </select>
-    </div>
-    <div>=</div>
-    <div>
-      <div>
-        <input
-          type="number"
-          @input="e => handleChange(e, 'valueB')"
-          :value="state.valueB"
-        />
-      </div>
-      <select @change="e => handleChange(e, 'unitB')">
-        <option
-          v-for="(unitName, index) in unit[state.property]"
-          :key="index"
-          :value="index"
-        >
-          {{unitName}}
-        </option>
-      </select>
-    </div>
+    <select class="input select-property" @change="e => handleChange(e, 'property')">
+      <option
+        v-for="key in Object.keys(property)"
+        :key="key"
+        :value="key"
+      >
+        {{property[~~(key)]}}
+      </option>
+    </select>
+  </div>
+
+  <div style="display: flex; justify-content: center; align-items: start;">
+    <input-value
+      @change:value="e => handleChange(e, 'valueA')"
+      @change:unit="e => handleChange(e, 'unitA')"
+      :unit="Object.keys(factor[state.property])"
+      :value="state.valueA"
+    />
+    <div class="divider">=</div>
+    <input-value
+      @change:value="e => handleChange(e, 'valueB')"
+      @change:unit="e => handleChange(e, 'unitB')"
+      :unit="Object.keys(factor[state.property])"
+      :value="state.valueB"
+    />
   </div>
   <ReloadPrompt />
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from "vue"
+import { reactive } from "vue"
+import { property, factor, convert } from './unit'
 import ReloadPrompt from './components/ReloadPrompt.vue'
+import InputValue from './components/InputValue.vue'
 
 interface State {
   [key: string]: number;
@@ -72,52 +51,57 @@ const state: State = reactive({
   valueA: 0,
   valueB: 0
 })
-const property: { [key: number]: string } = {}
-const unit: { [key: number]: string[] } = {}
-const factor: { [key: number]: number[] } = {}
 
-property[0] = 'Binary'
-unit[0] = ['KB', 'MB', 'GB']
-factor[0] = [1, 0.0009765625, 9.5367431640625e-7]
+const handleChange = (e: Event, prop: string) => {
+  const {value} = (<HTMLInputElement>e.currentTarget)
+  state[prop] = parseInt(value)
 
-const calculateValueA = (): number => {
-  const propFactor = factor[state.property]
-  if (state.unitA == state.unitB) return state.valueB  
-  return (state.unitB > state.unitA)
-    ? state.valueB / propFactor[state.unitB]
-    : state.valueB * propFactor[state.unitA]
+  if (prop === 'valueB') {
+    state.valueA = convert(state.valueB, [state.unitB, state.unitA])
+  } else {
+    state.valueB = convert(state.valueA, [state.unitA, state.unitB])
+  }
 }
-const calculateValueB = (): number => {
-  const propFactor = factor[state.property]
-  if (state.unitA == state.unitB) return state.valueA
-  return (state.unitB > state.unitA)
-    ? state.valueA * propFactor[state.unitB]
-    : state.valueA / propFactor[state.unitA]
-}
-const handleChange = (e: Event, stateProp: string) => {
-  const target = (<HTMLInputElement>e.currentTarget)
-  state[stateProp] = ~~(target.value)
-  
-  if (stateProp === 'unitA') state.valueA = calculateValueA()
-  if (stateProp === 'unitB') state.valueB = calculateValueB()
-}
-
-watch(() => state.valueA, () => {
-  state.valueB = calculateValueB()
-})
-watch(() => state.valueB, () => {
-  state.valueA = calculateValueA()
-})
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin-top: 60px;
+  max-width: 600px;
+  width: 100%;
+  margin: auto;
+  padding: 2em;
   background: #2c3e50;
   color: #fff;
+}
+.divider {
+  font-size: medium;
+  margin: 0 .2em;
+	padding: .7em;
+}
+.input {
+	background-color: #3b556f;
+	color: #eee;
+	border: 1px solid transparent;
+	border-radius: 0.375rem;
+	padding: .7em;
+	font-weight: bold;
+  font-size: medium;
+}
+.input:focus {
+	outline: none;
+	box-shadow: 0 0 0 0 #fff, 0 0 0 calc(1px + 0px) rgba(59, 130, 246, 0.5), 0 0 #0000;
+	box-shadow: 0 0 0 0 #fff, 0 0 0 calc(1px + 0px) rgba(59, 130, 246, 0.5), 0 0 #0000;
+	border-color: #2563eb;
+}
+
+.select-property {
+  margin-bottom: 1em;
 }
 </style>
