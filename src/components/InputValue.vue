@@ -7,18 +7,15 @@
 			:value="value"
 		/>
 		
-		<div v-for="(unitName, index) in unit" :key="index" class="radio">
-			<input
-				type="radio"
-				class="input"
-				:name="rand"
-				:id="`${rand}_${index}`"
+		<select class="input" style="width: 100%;" @click="e => $emit('change:unit', e)">
+			<option
+				v-for="(unitName, index) in unit"
+				:key="index"
 				:value="index"
-				:checked="index == 0"
-				@click="e => $emit('change:unit', e)"
 			>
-			<label :for="`${rand}_${index}`">{{unitName}}</label>
-		</div>
+				{{unitName}}
+			</option>
+		</select>
 	</div>
 </template>
 
@@ -33,7 +30,7 @@ const rand = Math.floor(Math.random() * 9999).toString();
 </script>
 
 <style>
-.radio {
+/* .radio {
 	display: flex;
 	align-items: center;
 	padding: .5em;
@@ -49,7 +46,6 @@ const rand = Math.floor(Math.random() * 9999).toString();
 }
 .radio input:checked {
 	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
-	/* border-color: transparent; */
 	background-color: currentColor;
 	background-size: 100% 100%;
 	background-position: center;
@@ -60,7 +56,7 @@ const rand = Math.floor(Math.random() * 9999).toString();
 	text-align: left;
 	cursor: pointer;
 	font-weight: bold;
-}
+} */
 
 input[type=number] {
 	-webkit-appearance: none;
