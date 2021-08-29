@@ -28,12 +28,14 @@
       :value="state.valueB"
     />
   </div>
+
+  <div style="margin: 3em;">{{rumus}}</div>
   <ReloadPrompt />
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from "vue"
-import { property, factor, convert } from './unit'
+import { computed, reactive, watch } from "vue"
+import { property, factor, convert, formula } from './conversion'
 import ReloadPrompt from './components/ReloadPrompt.vue'
 import InputValue from './components/InputValue.vue'
 
@@ -64,16 +66,23 @@ watch(() => state.property, () => {
 const handleChange = (e: Event, prop: string) => {
   const {value} = (<HTMLInputElement>e.currentTarget)
   state[prop] = parseInt(value)
+  const temperatur = property[state.property] === 'Temperature'
 
-  if (prop === 'valueA' || prop === 'unitB') {
-    state.valueB = convert(state.property, state.valueA, [state.unitB, state.unitA])
+  if (prop === 'valueA' || prop === 'unitB' || prop === 'unitA') {
+    state.valueB = convert(state.property, state.valueA, [state.unitA, state.unitB], temperatur)
     return
   }
-  if (prop === 'valueB' || prop === 'unitA') {
-    state.valueA = convert(state.property, state.valueB, [state.unitA, state.unitB])
+  if (prop === 'valueB') {
+    state.valueA = convert(state.property, state.valueB, [state.unitA, state.unitB], temperatur)
     return
   }
 }
+
+const rumus = computed(() => {
+  const [math, unitFactor] = formula(state.property, [state.unitA, state.unitB])
+  const propName = property[state.property].toLowerCase()
+  return `[Formula] ${math} ${propName} value with ${unitFactor}`
+})
 </script>
 
 <style>
