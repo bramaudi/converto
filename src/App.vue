@@ -73,8 +73,8 @@ watch(() => state.property, () => {
 
 const handleChange = (e: Event, prop: string) => {
   const {value} = (<HTMLInputElement>e.currentTarget)
-  state[prop] = parseInt(value)
   const temperatur = property[state.property] === 'Temperature'
+  state[prop] = parseInt(value)
 
   if (prop === 'valueA' || prop === 'unitB' || prop === 'unitA') {
     state.valueB = convert(state.property, state.valueA, [state.unitA, state.unitB], temperatur)
@@ -121,6 +121,7 @@ body {
   text-align: center;
   margin: 3em 0;
   float: left;
+  width: 100%;
 }
 .divider {
   font-size: xx-large;
