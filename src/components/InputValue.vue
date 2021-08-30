@@ -4,6 +4,7 @@
 			class="input"
 			type="number"
 			@input="e => $emit('change:value', e)"
+			@click="selectText"
 			:value="value"
 		/>
 		
@@ -32,6 +33,11 @@ const props = defineProps<Props>()
 defineEmits(['change:value', 'change:unit'])
 
 const selectedUnit = computed(() => props.unitSelected)
+
+const selectText = (e: Event) => {
+	const target =  (<HTMLInputElement>e.currentTarget)
+	target.select()
+}
 </script>
 
 <style>
