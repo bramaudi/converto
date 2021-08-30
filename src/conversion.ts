@@ -32,4 +32,44 @@ const formula = (property: number, units: [number, number]) => {
 	return [math, unitFactor]
 }
 
-export { property, factor, convert, formula }
+const formulaTemperature = (valueA: number, units: [number, number]): string => {
+	const [unitA, unitB] = units
+	const valueB = convert(property.findIndex(x => x === 'Temperature'), valueA, units, true)
+	const arrEqual = (a: [number, number], b: [number, number]) => {
+		return a.every((val, index) => val === b[index]);
+	}
+	// [Celsius, Fahrenheit, Kelvin, Rankine]
+	if (arrEqual(units, [0,1]) || arrEqual(units, [1,0])) {
+		return (unitA < unitB)
+			? `(${valueA} °C × 9/5) + 32 = ${valueB} °F`
+			: `(${valueA} °F − 32) × 5/9 = ${valueB} °C`
+	}
+	if (arrEqual(units, [0,2]) || arrEqual(units, [2,0])) {
+		return (unitA < unitB)
+			? `${valueA} °C + 273,15 = ${valueB} K`
+			: `${valueA} K - 273,15 = ${valueB} °C`
+	}
+	if (arrEqual(units, [0,3]) || arrEqual(units, [3,0])) {
+		return (unitA < unitB)
+			? `${valueA} °C × 9/5 + 491,67 = ${valueB} °R`
+			: `(${valueA} °R − 491,67) × 5/9 = ${valueB} °C`
+	}
+	if (arrEqual(units, [1,2]) || arrEqual(units, [2,1])) {
+		return (unitA < unitB)
+			? `(${valueA} °F − 32) × 5/9 + 273,15 = ${valueB} K`
+			: `(${valueA} K − 273,15) × 9/5 + 32 = ${valueB} °F`
+	}
+	if (arrEqual(units, [1,3]) || arrEqual(units, [3,1])) {
+		return (unitA < unitB)
+			? `${valueA} °F + 459,67 = ${valueB} °R`
+			: `${valueA} °R - 459,67 = ${valueB} °F`
+	}
+	if (arrEqual(units, [2,3]) || arrEqual(units, [3,2])) {
+		return (unitA < unitB)
+			? `${valueA} K × 1,8 = ${valueB} °R`
+			: `${valueA} °R × 5/9 = ${valueB} K`
+	}
+	return ''
+}
+
+export { property, factor, convert, formula, formulaTemperature }

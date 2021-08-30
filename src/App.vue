@@ -29,13 +29,13 @@
     />
   </div>
 
-  <div style="margin: 3em;">{{rumus}}</div>
+  <div style="margin: 3em;">{{formulaComputed}}</div>
   <ReloadPrompt />
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive, watch } from "vue"
-import { property, factor, convert, formula } from './conversion'
+import { property, factor, convert, formula, formulaTemperature } from './conversion'
 import ReloadPrompt from './components/ReloadPrompt.vue'
 import InputValue from './components/InputValue.vue'
 
@@ -78,10 +78,13 @@ const handleChange = (e: Event, prop: string) => {
   }
 }
 
-const rumus = computed(() => {
+const formulaComputed = computed(() => {
   const [math, unitFactor] = formula(state.property, [state.unitA, state.unitB])
   const propName = property[state.property].toLowerCase()
-  return `[Formula] ${math} ${propName} value with ${unitFactor}`
+  if (state.unitA == state.unitB) return ''
+  return (property[state.property] === 'Temperature')
+    ? `[Formula] ${formulaTemperature(state.valueA, [state.unitA, state.unitB])}`
+    : `[Formula] ${math} ${propName} value with ${unitFactor}`
 })
 </script>
 
