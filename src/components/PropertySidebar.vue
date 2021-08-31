@@ -36,8 +36,9 @@ const selected = computed(() => props.propertySelected)
 <style>
 .property-sidebar {
 	display: none;
-	margin-right: 5em;
+	padding-right: 3em;
 	float: left;
+	width: 25%;
 }
 .radio {
 	display: flex;
@@ -68,7 +69,7 @@ const selected = computed(() => props.propertySelected)
 	padding: .5em;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
 	.property-sidebar {
 		display: block !important;
 	}

@@ -35,7 +35,10 @@
       />
     </div>
 
-    <div class="formula">{{formulaComputed}}</div>
+    <div class="formula" v-if="formulaComputed">
+      <span>Formula</span>
+      {{formulaComputed}}
+    </div>
     <ReloadPrompt />
   </div>
 </template>
@@ -101,8 +104,8 @@ const formulaComputed = computed(() => {
   const propName = property[state.property].toLowerCase()
   if (state.unitA == state.unitB) return ''
   return (property[state.property] === 'Temperature')
-    ? `[Formula] ${formulaTemperature(state.valueA, [state.unitA, state.unitB])}`
-    : `[Formula] ${math} ${propName} value with ${unitFactor}`
+    ? formulaTemperature(state.valueA, [state.unitA, state.unitB])
+    : `${math} ${propName} value with ${unitFactor}`
 })
 </script>
 
@@ -114,24 +117,30 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  max-width: 600px;
-  height: 100vh;
-  width: 100%;
-  margin: auto;
-  padding: 2em;
+  padding: 0;
+  margin: 0;
   background: #2c3e50;
   color: #fff;
+}
+.app {
+  max-width: 600px;
+  margin: auto;
+  padding: 2em;
 }
 .conversion {
   float: left;
   display: flex;
 }
 .formula {
-  text-align: center;
+  text-align: left;
   margin: 3em 0;
   float: left;
   width: 100%;
+}
+.formula span {
+  background: cornflowerblue;
+  padding: .3em;
+  margin-right: .5em;
 }
 .divider {
   font-size: xx-large;
@@ -158,13 +167,13 @@ body {
   margin-bottom: 1em;
 }
 
-@media screen and (min-width: 768px) {
-  body {
-    max-width: 1024px;
-    padding: 2em;
+@media screen and (min-width: 700px) {
+  .app {
+    max-width: 800px;
+    margin: auto;
   }
 
-  .conversion, .formula { width: 70%; }
+  .conversion, .formula { width: 75%; }
 
   .sm-only { display: none !important; }
 }
