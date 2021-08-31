@@ -71,9 +71,19 @@ watch(() => state.property, () => {
   state.unitB = 0
 })
 
+const handleUnitSwap = (prop: string, value: number) => {
+  if (prop === 'unitA' && value === state.unitB) {
+    state.unitB = state.unitA
+  }
+  if (prop === 'unitB' && value === state.unitA) {
+    state.unitA = state.unitB
+  }
+}
+
 const handleChange = (e: Event, prop: string) => {
   const {value} = (<HTMLInputElement>e.currentTarget)
   const temperatur = property[state.property] === 'Temperature'
+  handleUnitSwap(prop, parseInt(value))
   state[prop] = parseInt(value)
 
   if (prop === 'valueA' || prop === 'unitB' || prop === 'unitA') {
